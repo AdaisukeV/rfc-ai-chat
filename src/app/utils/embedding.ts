@@ -1,5 +1,5 @@
 import { embed } from 'ai';
-import { google } from '@ai-sdk/google';
+//import { google } from '@ai-sdk/google';
 import { openai } from '@ai-sdk/openai';
 
 //const embeddingModel = google.textEmbeddingModel('text-embedding-004'); // GeminiのEmbeddingモデル
