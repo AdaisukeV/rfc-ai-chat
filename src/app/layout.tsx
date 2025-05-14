@@ -19,7 +19,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <body className="bg-zinc-950">
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
           >
