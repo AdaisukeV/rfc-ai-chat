@@ -31,7 +31,7 @@ export function ChatArea({ messages }: { messages: Message[] }) {
                       : "bg-zinc-800 text-white"
                   }`}
                 >
-                  {message.parts?.map((part: any, i: number) => {
+                  {message.parts?.map((part, i) => {
                     if (part.type === "text" && "text" in part) {
                       return (
                         <ReactMarkdown
