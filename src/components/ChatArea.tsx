@@ -3,8 +3,9 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Message } from '@ai-sdk/react';
 
-export function ChatArea({ messages }: { messages: any[] }) {
+export function ChatArea({ messages }: { messages: Message[] }) {
   return (
     <Card className="flex flex-col h-full bg-zinc-950 border-0">
       <CardHeader>
@@ -30,7 +31,7 @@ export function ChatArea({ messages }: { messages: any[] }) {
                       : "bg-zinc-800 text-white"
                   }`}
                 >
-                  {message.parts.map((part: any, i: number) => {
+                  {message.parts?.map((part: any, i: number) => {
                     if (part.type === "text" && "text" in part) {
                       return (
                         <ReactMarkdown
