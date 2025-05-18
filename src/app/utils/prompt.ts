@@ -6,12 +6,12 @@ export function buildPrompt(contexts: string, question: string): string {
   回答の最後には、回答作成時に参照したRFCのセクション（例：[RFC 5322 Section 4.1.2](https://datatracker.ietf.org/doc/html/rfc5321#section-4.1.2)のリンク形式）とそのセクションの原文をコードブロックで示してください。
   コンテキストに答えがない場合は「分かりません」とだけ答えてください。
   
+  質問:
+  ${question}
+
   コンテキスト:
   ※破線（----------------------------------------------------------------------------）で区切られた部分は、コンテキストの区切りを示しています。
   ${contexts}
-  
-  質問:
-  ${question}
 
   回答:
   `;
