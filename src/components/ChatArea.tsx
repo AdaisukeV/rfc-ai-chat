@@ -1,6 +1,7 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Message } from '@ai-sdk/react';
@@ -36,21 +37,34 @@ export function ChatArea({ messages }: { messages: Message[] }) {
                       return (
                         <ReactMarkdown
                           key={`${message.id}-${i}`}
-                          remarkPlugins={[remarkGfm]}
+                          remarkPlugins={[remarkGfm, remarkBreaks]}
                           components={{
+                            p({ node, children }) {
+                              // nodeがnullまたはpositionがnullの場合、デフォルトのスタイルを適用
+                              if (!node || !node.position || !node.position.start) {
+                                return <p style={{ margin: "0 0 0 0" }}>{children}</p>;
+                              }
+                              // 最初の段落の場合marginを0にし、以降の段落は1emのマージンを適用
+                              const isFirstParagraph = node.position.start.line === 1;
+                              return (
+                                <p style={{ margin: isFirstParagraph ? "0 0 0 0" : "1em 0 0 0" }}>
+                                  {children}
+                                </p>
+                              );
+                            },
                             code({ inline, children }: { inline?: boolean; children?: React.ReactNode }) {
-                                if (inline) {
-                                    return (
-                                    <code className="bg-zinc-900 text-red-500">
-                                        {children}
-                                    </code>
-                                    );
-                                }
+                              if (inline) {
                                 return (
-                                    <code className="bg-zinc-900 text-white p-2 rounded block">
+                                  <code className="bg-zinc-900 text-red-500">
                                     {children}
-                                    </code>
+                                  </code>
                                 );
+                              }
+                              return (
+                                <code className="bg-zinc-900 text-white p-2 rounded block">
+                                  {children}
+                                </code>
+                              );
                             },
                             ul({ children }) {
                               return <ul className="list-disc pl-5">{children}</ul>;
