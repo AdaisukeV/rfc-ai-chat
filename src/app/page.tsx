@@ -8,6 +8,7 @@ import { QuestionForm } from '../components/QuestionForm';
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
 
+  // 学習済みRFCの番号一覧
   const rfcNumbers = [
     1939, 2045, 2046, 2047, 
     2048, 2049, 2505, 3461, 
@@ -36,9 +37,7 @@ export default function Chat() {
   return (
     <div className="flex flex-col w-full max-w-6xl py-5 mx-auto">
       <div className="flex flex-row w-full max-w-6xl mx-auto h-screen">
-        <div className="flex flex-col flex-1">
-          <ChatArea messages={messages} />
-        </div>
+        <ChatArea messages={messages} />
         <RfcList rfcNumbers={rfcNumbers} />
       </div>
       <QuestionForm

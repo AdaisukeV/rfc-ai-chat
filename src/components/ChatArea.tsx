@@ -7,7 +7,7 @@ import { Message } from '@ai-sdk/react';
 
 export function ChatArea({ messages }: { messages: Message[] }) {
   return (
-    <Card className="flex flex-col h-full bg-zinc-950 border-0">
+    <Card className="flex flex-col flex-1 h-full bg-zinc-950 border-0">
       <CardHeader>
         <CardTitle>RFC AIチャット</CardTitle>
         <CardDescription>
