@@ -12,7 +12,7 @@ export function ChatArea({ messages }: { messages: Message[] }) {
       <CardHeader>
         <CardTitle>RFC AIチャット</CardTitle>
         <CardDescription>
-          メールやネットワーク周りの仕様について質問してください。RFCの内容に基づいて質問に答えます。
+          メール周りの仕様について質問してください。RFCの内容に基づいて質問に答えます。
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 p-4 overflow-y-auto">
