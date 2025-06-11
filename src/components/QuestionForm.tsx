@@ -27,7 +27,7 @@ export function QuestionForm({
             adjustTextareaHeight(e);
           }}
           onKeyDown={handleKeyDown}
-          placeholder="こちらから質問してください"
+          placeholder="こちらから質問してください（例：メールが送信される仕組みを教えてください）"
           className="flex-1 placeholder:text-zinc-400 resize-none overflow-hidden p-2 border rounded"
           rows={1}
         />
