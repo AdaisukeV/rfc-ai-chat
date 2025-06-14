@@ -35,10 +35,25 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex flex-col w-full max-w-6xl py-5 mx-auto">
-      <div className="flex flex-row w-full max-w-6xl mx-auto h-screen">
-        <ChatArea messages={messages} />
-        <RfcList rfcNumbers={rfcNumbers} />
+    <div className="flex flex-col w-full max-w-6xl py-5 mx-auto min-h-screen">
+      <div
+        className="
+          flex
+          flex-col
+          md:flex-row
+          w-full
+          max-w-6xl
+          mx-auto
+          h-[calc(100vh-120px)]
+          gap-4
+        "
+      >
+        <div className="flex-1 min-w-0">
+          <ChatArea messages={messages} />
+        </div>
+        <div className="md:w-50 w-full mt-4 md:mt-0">
+          <RfcList rfcNumbers={rfcNumbers} />
+        </div>
       </div>
       <QuestionForm
         input={input}
