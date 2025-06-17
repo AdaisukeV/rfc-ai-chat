@@ -8,7 +8,7 @@ export function RfcList({ rfcNumbers }: { rfcNumbers: number[] }) {
         <CardTitle>学習済みRFC一覧</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 p-4 overflow-y-auto">
-        <ul className="list-disc pl-5 grid grid-cols-2 gap-x-4 gap-y-1">
+        <ul className="list-disc pl-5 grid grid-cols-3 md:grid-cols-2 gap-x-4 gap-y-1">
           {rfcNumbers.map((rfcNumber) => (
             <li key={rfcNumber}>
               <a
