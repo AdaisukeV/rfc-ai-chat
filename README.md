@@ -110,19 +110,16 @@ rfc-ai-chat/
 
 ### 前提条件
 
-- Node.js 18.0.0 以上
+- Node.js 18.x以上
 - npm または yarn
-- 以下のAPIキー
-  - Pinecone API Key
-  - Google AI API Key（Gemini用）
-  - LangSmith API Key（オプション：トレーシング用）
+- Git
 
 ### 手順
 
 #### 1. リポジトリのクローン
 
 ```bash
-git clone https://github.com/AdaisukeV/rfc-ai-chat.git
+git clone git@github.com:AdaisukeV/rfc-ai-chat.git
 cd rfc-ai-chat
 ```
 
@@ -132,31 +129,13 @@ cd rfc-ai-chat
 npm install
 ```
 
-#### 3. 環境変数の設定
-
-`.env.local` ファイルを作成し、以下の環境変数を設定：
+#### 3. 開発サーバーの起動
 
 ```bash
-# Pinecone設定
-PINECONE_API_KEY=your_pinecone_api_key
-PINECONE_INDEX=rfc-index-openai
-
-# Google AI設定  
-GOOGLE_GENERATIVE_AI_API_KEY=your_google_ai_api_key
-
-# LangSmith設定（オプション）
-LANGCHAIN_TRACING_V2=true
-LANGSMITH_ENDPOINT=https://api.smith.langchain.com
-LANGSMITH_API_KEY=your_langsmith_api_key
+vercel dev
 ```
 
-#### 4. 開発サーバーの起動
-
-```bash
-npm run dev
-```
-
-ブラウザで `http://localhost:3000` にアクセスしてアプリケーションを確認
+アプリケーションは http://localhost:3000 でアクセス可能になります。
 
 ## 開発・デプロイ手順
 
@@ -165,29 +144,37 @@ npm run dev
 #### 1. 開発環境で作業ブランチを作成
 
 ```bash
-git checkout -b feature/your-feature-name
+git switch -c feature/your-feature-name
 ```
 
 #### 2. 作業ブランチで開発
 
-```bash
-# ファイルの編集
-# 実装・修正作業
-```
+- コードの変更
+- リンターでのコード品質チェック: `npm run lint`
+- ビルドテスト: `npm run build`
 
-#### 3. 開発サーバーを起動してアプリケーションの動作確認
+#### 3. 開発サーバーで動作確認
 
 ```bash
-npm run dev
+vercel dev
 ```
 
 #### 4. 変更内容をリモートの作業ブランチにpush
 
 ```bash
-git add .
-git commit -m "feat: 機能の説明"
+git add -A
+git commit -m "feat: your feature description"
 git push origin feature/your-feature-name
 ```
+
+> [!TIP]
+> `git add -A`を実行すると、全ての変更（追加・更新・削除）がステージングに上げられます。
+> 変更内容を個別に確認して慎重に進める場合は、以下の手順で進めることをお勧めします。
+> 
+> 1. `git status`で変更内容を確認する  
+> 2. `git diff`で変更内容の詳細を確認する（必要に応じて）  
+> 3. `git add <ファイル名>`で個別にステージングに上げる  
+> 4. `git diff --cached`でステージング内容を最終確認する
 
 #### 5. プルリクエストの作成とマージ
 
@@ -195,12 +182,9 @@ git push origin feature/your-feature-name
 
 #### 初期設定
 
-##### 1. Vercelアカウント作成
-[Vercel](https://vercel.com)でアカウントを作成
-
-##### 2. Vercelに[GitHubリポジトリをインポート](https://vercel.com/docs/getting-started-with-vercel/import)
-
-##### 3. Vercelダッシュボードで環境変数を設定
+1. **Vercelアカウント作成**: https://vercel.com でアカウント作成
+2. **GitHubリポジトリをインポート**: VercelダッシュボードでGitHubリポジトリを連携
+3. **環境変数設定**: Vercelダッシュボードで以下を設定
 
 | 変数名 | 値 | 説明 |
 |-------|---|------|
@@ -208,28 +192,46 @@ git push origin feature/your-feature-name
 | `LANGCHAIN_TRACING_V2` | `true` | LangSmithトレーシング有効化 |
 | `LANGSMITH_ENDPOINT` | `https://api.smith.langchain.com` | LangSmithエンドポイント |
 | `LANGSMITH_API_KEY` | `your_api_key` | LangSmith APIキー |
+| `LANGSMITH_PROJECT` | `your_project_name` | LangSmithのプロジェクト名（未指定の場合、`default`が適用される） |
+| **LangChain** | | |
+| `GOOGLE_API_KEY` | `your_api_key` | Google Gemini APIキー |
+| `OPENAI_API_KEY` | `your_api_key` | OpenAI APIキー（Vercel AI SDKでも使用される） |
+| **Vercel AI SDK** | | |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | `your_api_key` | Google Gemini APIキー |
 | **Pinecone** | | |
 | `PINECONE_API_KEY` | `your_api_key` | Pinecone APIキー |
 | `PINECONE_INDEX` | `rfc-index-openai` | Pineconeインデックス名 |
-| **Google AI** | | |
-| `GOOGLE_GENERATIVE_AI_API_KEY` | `your_api_key` | Google Gemini APIキー |
 
-#### 自動デプロイ
-- `main` ブランチへのpushで本番環境に自動デプロイ
-- プルリクエストでプレビューデプロイメント作成
+#### デプロイフロー
+
+- **STGリリース**: 
+  1. mainブランチへのPRを作成
+  2. PRをmergeすると自動的にステージング環境にデプロイ
+  
+- **本番リリース**: 
+  1. productionブランチへのPRを作成
+  2. PRをmergeすると自動的に本番環境にデプロイ
 
 ## RFC追加・更新手順
 
-新しいRFCを学習データに追加する場合は、以下のスクリプトを使用してください。
+新しいRFCを学習データに追加する場合は、以下のPythonスクリプトを実行してください。
 
-### RFC追加スクリプト
+> [!NOTE]
+> 実行環境としては[Google Colaboratory](https://colab.google/)が利用可能です。
 
-Google Colabで以下のコードを実行：
+### RFC追加スクリプト（Google Colaboratoryを利用する場合）
+#### 1. 必要なライブラリをインストール
+
+```bash
+!pip install -U langchain_openai langchain_pinecone langchain-core langchain-text-splitters
+```
+
+#### 2. RFCを学習データに追加
+
+> [!TIP]
+> 一度に多くのRFCを追加しようとすると、通信データ容量の制限に達した旨のエラーが発生することがあります。その場合は、RFCを1つずつアップロードすることをお勧めします。
 
 ```python
-# 必要なライブラリのインストール
-!pip install -U langchain_openai langchain_pinecone langchain-core langchain-text-splitters
-
 import os
 import re
 import requests
@@ -365,10 +367,8 @@ process_rfc_documents(["RFC番号#1", "RFC番号#2", "RFC番号#3"])
 ```
 
 ### RFC追加後の更新手順
-
-1. RFC追加スクリプトを実行してPineconeに新しいRFCデータを追加
-2. `src/app/page.tsx`の"学習済みRFCの番号一覧"を更新
-3. 変更をコミット・プッシュして本番環境に反映
+1. `src/app/page.tsx`の"学習済みRFCの番号一覧"を更新
+2. 変更をコミット・プッシュしてSTG/本番環境に反映
 
 ## 参考リンク
 
