@@ -113,6 +113,7 @@ rfc-ai-chat/
 - Node.js 18.x以上
 - npm または yarn
 - Git
+- [Vercel CLI](https://vercel.com/docs/cli)
 
 ### 手順
 
