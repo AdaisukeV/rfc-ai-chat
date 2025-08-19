@@ -45,13 +45,35 @@ graph TD
 | **UI** | React | ^19.0.0 | UIライブラリ |
 | **スタイリング** | Tailwind CSS | ^4 | CSSフレームワーク |
 | **UI コンポーネント** | Radix UI | - | アクセシブルなUIコンポーネント |
-| **AI・LLM** | Google Gemini AI | - | 回答生成 |
+| **AI・LLM** | Google Gemini AI | - | 回答生成・日英翻訳 |
 | **LLM フレームワーク** | LangChain | ^0.3.24 | AI処理パイプライン |
 | **ベクトルストア** | Pinecone | ^5.1.2 | RFC文書の埋め込み保存・検索 |
 | **埋め込みモデル** | OpenAI Embeddings | - | テキストベクトル化 |
 | **チャット機能** | Vercel AI SDK | ^4.3.10 | チャットインターフェース |
 | **マークダウン** | react-markdown | ^10.1.0 | 回答の表示 |
 | **デプロイ** | Vercel | - | 本番環境ホスティング |
+
+### 使用AI生成モデル
+
+現在使用している生成AIモデルの詳細情報：
+
+#### 回答生成
+- **モデル名**: Gemini 2.5 Flash
+- **用途**: ユーザー質問への回答生成
+- **実装ファイル**: `src/app/api/chat/route.ts`
+- **仕様・料金**: [Gemini 2.5 Flash](https://ai.google.dev/gemini-api/docs/models?hl=ja#gemini-2.5-flash) | [Google AI Studio 価格](https://ai.google.dev/gemini-api/docs/pricing?hl=ja)
+
+#### 日英翻訳
+- **モデル名**: Gemini 2.5 Flash
+- **用途**: 日本語質問の英語翻訳（ベクトル検索精度向上のため）
+- **実装ファイル**: `src/app/utils/translate.ts`
+- **仕様・料金**: [Gemini 2.5 Flash](https://ai.google.dev/gemini-api/docs/models?hl=ja#gemini-2.5-flash) | [Google AI Studio 価格](https://ai.google.dev/gemini-api/docs/pricing?hl=ja)
+
+#### テキストベクトル化
+- **モデル名**: text-embedding-3-small
+- **用途**: RFC文書とユーザー質問のベクトル化
+- **実装ファイル**: `src/app/utils/embedding.ts`, `src/app/api/chat/route.ts`
+- **仕様・料金**: [text-embedding-3-small](https://platform.openai.com/docs/models/text-embedding-3-small) | [OpenAI 価格](https://platform.openai.com/docs/pricing?latest-pricing=standard)
 
 ### ディレクトリ構成
 
@@ -370,6 +392,60 @@ process_rfc_documents(["RFC番号#1", "RFC番号#2", "RFC番号#3"])
 ### RFC追加後の更新手順
 1. `src/app/page.tsx`の"学習済みRFCの番号一覧"を更新
 2. 変更をコミット・プッシュしてSTG/本番環境に反映
+
+## AIモデル管理・更新手順
+
+新しい生成AIモデルのリリースや料金変動に対応するための手順を記載します。
+
+### モデル更新の検討タイミング
+- 新しいモデルバージョンのリリース時
+- 既存モデルの料金変更時
+- パフォーマンス改善が見込めるモデルの登場時
+- 既存モデルの廃止予告時
+
+### モデル更新手順
+
+#### 1. テスト環境での検証
+```bash
+# 作業ブランチを作成
+git switch -c feature/update-ai-model
+
+# 対象ファイルでモデル名を変更
+# - src/app/api/chat/route.ts (回答生成モデル)
+# - src/app/utils/translate.ts (翻訳モデル) 
+# - src/app/utils/embedding.ts (埋め込みモデル)
+```
+
+#### 2. 動作確認
+```bash
+# 開発サーバーで動作確認
+vercel dev
+
+# 以下の機能をテスト：
+# - 質問への回答生成
+# - 日本語質問の英語翻訳
+# - RFC文書の検索精度
+```
+
+#### 3. READMEの更新
+- **使用AI生成モデル**セクションのモデル名・仕様リンクを更新
+- 必要に応じて料金情報へのリンクを確認・更新
+
+#### 4. デプロイ・本番反映
+```bash
+# 変更をコミット・プッシュ
+git add -A
+git commit -m "feat: update AI model to [新しいモデル名]"
+git push origin feature/update-ai-model
+
+# PRを作成してSTG→本番環境に反映
+```
+
+### モデル更新時の注意点
+- **段階的更新**: 複数モデルを同時に変更せず、一つずつ検証する
+- **パフォーマンス監視**: 更新後は回答品質・レスポンス時間を監視
+- **コスト影響**: 料金体系の変更による月額コストへの影響を確認
+- **APIキー管理**: 新しいプロバイダーのモデル使用時は環境変数の追加が必要な場合がある
 
 ## 参考リンク
 
