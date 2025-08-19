@@ -61,7 +61,7 @@ export async function POST(req: Request) {
 
         // AIモデルで回答を生成
         const llm = new ChatGoogleGenerativeAI({ 
-            model: "gemini-2.0-flash",
+            model: "gemini-2.5-flash",
             //temperature: 2.0
         })
         //const llm = new ChatOpenAI({ model: "gpt-4" })

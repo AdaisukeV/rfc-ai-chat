@@ -3,7 +3,7 @@ import { generateText } from 'ai';
 
 export async function translateToEng(input: string): Promise<string> {
     const result = await generateText({
-        model: google('models/gemini-2.0-flash'),
+        model: google('models/gemini-2.5-flash'),
         prompt: `Translate the following question to English:\n\n"${input}"`,
     });
 
