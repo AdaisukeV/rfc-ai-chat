@@ -217,16 +217,9 @@ git push origin feature/your-feature-name
 | `LANGSMITH_API_KEY` | `your_api_key` | LangSmith APIキー |
 | `LANGSMITH_PROJECT` | `your_project_name` | LangSmithのプロジェクト名（未指定の場合、`default`が適用される） |
 | **Google Vertex AI** | | |
-| `GOOGLE_APPLICATION_CREDENTIALS` | `{"type":"service_account",...}` | Google Cloud サービスアカウント認証情報（JSON文字列） |
-| `GCLOUD_PROJECT` | `your-project-id` | Google Cloud プロジェクID |
+| `GCP_CREDENTIALS_JSON_BASE64` | `eyJ0eXBlIjoi...` | サービスアカウントJSON鍵をBase64エンコードしたもの |
+| `GOOGLE_CLOUD_PROJECT` | `your-project-id` | Google Cloud プロジェクトID |
 | `GOOGLE_CLOUD_LOCATION` | `us-central1` | Google Cloud リージョン |
-| **Google Vertex AI (個別指定)** | | |
-| `GOOGLE_PROJECT_ID` | `your-project-id` | Google Cloud プロジェクト ID（GCLOUD_PROJECTと同じ値） |
-| `GOOGLE_PRIVATE_KEY` | `-----BEGIN PRIVATE KEY-----\n...` | サービスアカウントの秘密鍵 |
-| `GOOGLE_CLIENT_EMAIL` | `vertex-ai-service@your-project.iam.gserviceaccount.com` | サービスアカウントのメールアドレス |
-| `GOOGLE_PRIVATE_KEY_ID` | `key-id` | 秘密鍵ID |
-| `GOOGLE_CLIENT_ID` | `client-id` | クライアント ID |
-| `GOOGLE_CLIENT_X509_CERT_URL` | `https://www.googleapis.com/robot/v1/...` | クライアント証明書 URL |
 | **OpenAI** | | |
 | `OPENAI_API_KEY` | `your_api_key` | OpenAI APIキー（埋め込みモデル用） |
 | **Pinecone** | | |
