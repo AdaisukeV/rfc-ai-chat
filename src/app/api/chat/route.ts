@@ -1,4 +1,4 @@
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatVertexAI } from "@langchain/google-vertexai";
 import { LangChainAdapter, Message } from 'ai';
 import { createVectorStore } from "@/app/utils/pinecone";
 import { OpenAIEmbeddings } from "@langchain/openai";
@@ -60,7 +60,7 @@ export async function POST(req: Request) {
         console.log('prompt: ',prompt);
 
         // AIモデルで回答を生成
-        const llm = new ChatGoogleGenerativeAI({ 
+        const llm = new ChatVertexAI({ 
             model: "gemini-2.5-flash",
             //temperature: 2.0
         })

@@ -1,11 +1,13 @@
-import { google } from '@ai-sdk/google';
-import { generateText } from 'ai';
+import { ChatVertexAI } from "@langchain/google-vertexai";
 
 export async function translateToEng(input: string): Promise<string> {
-    const result = await generateText({
-        model: google('models/gemini-2.5-flash'),
-        prompt: `Translate the following question to English:\n\n"${input}"`,
+    const llm = new ChatVertexAI({
+        model: "gemini-2.5-flash",
     });
+    
+    const result = await llm.invoke(
+        `Translate the following question to English:\n\n"${input}"`
+    );
 
-    return result.text.trim();
+    return result.content.toString().trim();
 }
