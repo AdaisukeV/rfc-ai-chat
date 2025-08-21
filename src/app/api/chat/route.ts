@@ -4,6 +4,7 @@ import { createVectorStore } from "@/app/utils/pinecone";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { translateToEng } from '@/app/utils/translate';
 import { buildPrompt } from '@/app/utils/prompt'; // プロンプト生成関数
+import { getVertexAIAuth } from '@/app/utils/vertexai-config';
 
 export const maxDuration = 30;
 
@@ -60,8 +61,10 @@ export async function POST(req: Request) {
         console.log('prompt: ',prompt);
 
         // AIモデルで回答を生成
+        const authConfig = getVertexAIAuth();
         const llm = new ChatVertexAI({ 
             model: "gemini-2.5-flash",
+            ...authConfig,
             //temperature: 2.0
         })
         //const llm = new ChatOpenAI({ model: "gpt-4" })

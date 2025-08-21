@@ -220,6 +220,13 @@ git push origin feature/your-feature-name
 | `GOOGLE_APPLICATION_CREDENTIALS` | `{"type":"service_account",...}` | Google Cloud サービスアカウント認証情報（JSON文字列） |
 | `GCLOUD_PROJECT` | `your-project-id` | Google Cloud プロジェクID |
 | `GOOGLE_CLOUD_LOCATION` | `us-central1` | Google Cloud リージョン |
+| **Google Vertex AI (個別指定)** | | |
+| `GOOGLE_PROJECT_ID` | `your-project-id` | Google Cloud プロジェクト ID（GCLOUD_PROJECTと同じ値） |
+| `GOOGLE_PRIVATE_KEY` | `-----BEGIN PRIVATE KEY-----\n...` | サービスアカウントの秘密鍵 |
+| `GOOGLE_CLIENT_EMAIL` | `vertex-ai-service@your-project.iam.gserviceaccount.com` | サービスアカウントのメールアドレス |
+| `GOOGLE_PRIVATE_KEY_ID` | `key-id` | 秘密鍵ID |
+| `GOOGLE_CLIENT_ID` | `client-id` | クライアント ID |
+| `GOOGLE_CLIENT_X509_CERT_URL` | `https://www.googleapis.com/robot/v1/...` | クライアント証明書 URL |
 | **OpenAI** | | |
 | `OPENAI_API_KEY` | `your_api_key` | OpenAI APIキー（埋め込みモデル用） |
 | **Pinecone** | | |
@@ -442,17 +449,34 @@ gcloud iam service-accounts keys create ./vertex-ai-key.json \
 
 ### Vercel 環境変数設定
 
-Vercel ダッシュボードで以下の環境変数を設定：
+Vercel ダッシュボードで以下の環境変数を設定します。2つの方法から選択できます：
+
+#### 方法1: JSON文字列として設定（推奨）
 
 1. **`GOOGLE_APPLICATION_CREDENTIALS`**
-   - 値: サービスアカウントJSON鍵の内容（JSON文字列として貼り付け）
-   - 例: `{"type":"service_account","project_id":"your-project-id",...}`
+   - 値: サービスアカウントJSON鍵の内容全体を文字列として貼り付け
+   - 例: `{"type":"service_account","project_id":"your-project-id","private_key_id":"...","private_key":"-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n","client_email":"vertex-ai-service@your-project.iam.gserviceaccount.com",...}`
 
 2. **`GCLOUD_PROJECT`**
    - 値: Google Cloud プロジェクト ID
 
 3. **`GOOGLE_CLOUD_LOCATION`**
    - 値: リージョン（例: `us-central1`）
+
+#### 方法2: 個別の環境変数として設定
+
+JSONファイルから各項目を個別に設定：
+
+1. **`GCLOUD_PROJECT`** - プロジェクト ID
+2. **`GOOGLE_PROJECT_ID`** - プロジェクト ID（GLCOUDと同じ値）
+3. **`GOOGLE_PRIVATE_KEY`** - 秘密鍵（改行は `\n` でエスケープ）
+4. **`GOOGLE_CLIENT_EMAIL`** - サービスアカウントのメールアドレス
+5. **`GOOGLE_PRIVATE_KEY_ID`** - 秘密鍵ID
+6. **`GOOGLE_CLIENT_ID`** - クライアントID
+7. **`GOOGLE_CLIENT_X509_CERT_URL`** - 証明書URL
+8. **`GOOGLE_CLOUD_LOCATION`** - リージョン
+
+> **注意**: 方法1（JSON文字列）の方が設定が簡単で推奨されます。方法2は個別管理が必要な場合に使用してください。
 
 ### ローカル開発環境設定
 
