@@ -2,12 +2,12 @@
 
 ## アプリケーションの概要
 
-RFC AI Chat は、メール関連のRFC（Request for Comments）仕様に関する質問にAIが回答するWebアプリケーションです。ユーザーが日本語で質問を入力すると、学習済みのRFC文書を検索し、Google Gemini AIが適切な回答を生成します。
+RFC AI Chat は、メール関連のRFC（Request for Comments）仕様に関する質問にAIが回答するWebアプリケーションです。ユーザーが日本語で質問を入力すると、学習済みのRFC文書を検索し、Google Vertex AI（Gemini）が適切な回答を生成します。
 
 ### 主要機能
 - 日本語での質問受付（内部で英語に自動翻訳）
 - RFC文書からのベクトル検索による関連情報の抽出
-- Google Gemini AIによる自然な日本語回答の生成
+- Google Vertex AI（Gemini）による自然な日本語回答の生成
 - 回答時のRFCセクション参照リンクの提供
 - 学習済みRFC一覧の表示
 - ダークテーマのチャットインターフェース
@@ -23,7 +23,7 @@ graph TD
     B --> C[Pineconeベクトル検索]
     C --> D[関連RFCセクション取得]
     D --> E[プロンプト生成]
-    E --> F[Google Gemini AI回答生成]
+    E --> F[Google Vertex AI回答生成]
     F --> G[日本語回答+RFC参照リンク]
     G --> H[チャット画面に表示]
 ```
@@ -45,7 +45,7 @@ graph TD
 | **UI** | React | ^19.0.0 | UIライブラリ |
 | **スタイリング** | Tailwind CSS | ^4 | CSSフレームワーク |
 | **UI コンポーネント** | Radix UI | - | アクセシブルなUIコンポーネント |
-| **AI・LLM** | Google Gemini AI | - | 回答生成・日英翻訳 |
+| **AI・LLM** | Google Vertex AI | - | 回答生成・日英翻訳 |
 | **LLM フレームワーク** | LangChain | ^0.3.24 | AI処理パイプライン |
 | **ベクトルストア** | Pinecone | ^5.1.2 | RFC文書の埋め込み保存・検索 |
 | **埋め込みモデル** | OpenAI Embeddings | - | テキストベクトル化 |
@@ -61,13 +61,13 @@ graph TD
 - **モデル名**: Gemini 2.5 Flash
 - **用途**: ユーザー質問への回答生成
 - **実装ファイル**: `src/app/api/chat/route.ts`
-- **仕様・料金**: [Gemini 2.5 Flash](https://ai.google.dev/gemini-api/docs/models?hl=ja#gemini-2.5-flash) | [Google AI Studio 価格](https://ai.google.dev/gemini-api/docs/pricing?hl=ja)
+- **仕様・料金**: [Gemini 2.5 Flash](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/gemini) | [Vertex AI 価格](https://cloud.google.com/vertex-ai/generative-ai/pricing)
 
 #### 日英翻訳
 - **モデル名**: Gemini 2.5 Flash
 - **用途**: 日本語質問の英語翻訳（ベクトル検索精度向上のため）
 - **実装ファイル**: `src/app/utils/translate.ts`
-- **仕様・料金**: [Gemini 2.5 Flash](https://ai.google.dev/gemini-api/docs/models?hl=ja#gemini-2.5-flash) | [Google AI Studio 価格](https://ai.google.dev/gemini-api/docs/pricing?hl=ja)
+- **仕様・料金**: [Gemini 2.5 Flash](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/gemini) | [Vertex AI 価格](https://cloud.google.com/vertex-ai/generative-ai/pricing)
 
 #### テキストベクトル化
 - **モデル名**: text-embedding-3-small
@@ -216,11 +216,12 @@ git push origin feature/your-feature-name
 | `LANGSMITH_ENDPOINT` | `https://api.smith.langchain.com` | LangSmithエンドポイント |
 | `LANGSMITH_API_KEY` | `your_api_key` | LangSmith APIキー |
 | `LANGSMITH_PROJECT` | `your_project_name` | LangSmithのプロジェクト名（未指定の場合、`default`が適用される） |
-| **LangChain** | | |
-| `GOOGLE_API_KEY` | `your_api_key` | Google Gemini APIキー |
-| `OPENAI_API_KEY` | `your_api_key` | OpenAI APIキー（Vercel AI SDKでも使用される） |
-| **Vercel AI SDK** | | |
-| `GOOGLE_GENERATIVE_AI_API_KEY` | `your_api_key` | Google Gemini APIキー |
+| **Google Vertex AI** | | |
+| `GCP_CREDENTIALS_JSON_BASE64` | `eyJ0eXBlIjoi...` | サービスアカウントJSON鍵をBase64エンコードしたもの |
+| `GOOGLE_CLOUD_PROJECT` | `your-project-id` | Google Cloud プロジェクトID |
+| `GOOGLE_CLOUD_LOCATION` | `us-central1` | Google Cloud リージョン |
+| **OpenAI** | | |
+| `OPENAI_API_KEY` | `your_api_key` | OpenAI APIキー（埋め込みモデル用） |
 | **Pinecone** | | |
 | `PINECONE_API_KEY` | `your_api_key` | Pinecone APIキー |
 | `PINECONE_INDEX` | `rfc-index-openai` | Pineconeインデックス名 |
@@ -392,6 +393,105 @@ process_rfc_documents(["RFC番号#1", "RFC番号#2", "RFC番号#3"])
 ### RFC追加後の更新手順
 1. `src/app/page.tsx`の"学習済みRFCの番号一覧"を更新
 2. 変更をコミット・プッシュしてSTG/本番環境に反映
+
+## Google AI Studio → Vertex AI 移行ガイド
+
+このアプリケーションは Google AI Studio から Vertex AI Studio に移行済みです。サービスアカウント認証を使用してより安全で本格的な運用が可能になっています。
+
+### 移行済みの変更点
+
+#### 1. コード変更
+- `@langchain/google-genai` → `@langchain/google-vertexai`
+- `@ai-sdk/google` → `@langchain/google-vertexai`
+- API キー認証 → サービスアカウント認証
+
+#### 2. 環境変数の変更
+| 旧（Google AI Studio） | 新（Vertex AI） | 
+|-------------------|----------------|
+| `GOOGLE_API_KEY` | `GOOGLE_APPLICATION_CREDENTIALS` |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | `GCLOUD_PROJECT` |
+| - | `GOOGLE_CLOUD_LOCATION` |
+
+### Google Cloud 設定手順
+
+#### 1. プロジェクト設定
+```bash
+# Google Cloud CLI でプロジェクトを選択
+gcloud config set project YOUR_PROJECT_ID
+
+# Vertex AI API を有効化
+gcloud services enable aiplatform.googleapis.com
+```
+
+#### 2. サービスアカウント作成
+```bash
+# サービスアカウント作成
+gcloud iam service-accounts create vertex-ai-service \
+    --description="Service account for Vertex AI" \
+    --display-name="Vertex AI Service Account"
+
+# 必要な権限を付与
+gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
+    --member="serviceAccount:vertex-ai-service@YOUR_PROJECT_ID.iam.gserviceaccount.com" \
+    --role="roles/aiplatform.user"
+
+# JSON キーファイルを生成
+gcloud iam service-accounts keys create ./vertex-ai-key.json \
+    --iam-account=vertex-ai-service@YOUR_PROJECT_ID.iam.gserviceaccount.com
+```
+
+### Vercel 環境変数設定
+
+Vercel ダッシュボードで以下の環境変数を設定します。2つの方法から選択できます：
+
+#### 方法1: JSON文字列として設定（推奨）
+
+1. **`GOOGLE_APPLICATION_CREDENTIALS`**
+   - 値: サービスアカウントJSON鍵の内容全体を文字列として貼り付け
+   - 例: `{"type":"service_account","project_id":"your-project-id","private_key_id":"...","private_key":"-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n","client_email":"vertex-ai-service@your-project.iam.gserviceaccount.com",...}`
+
+2. **`GCLOUD_PROJECT`**
+   - 値: Google Cloud プロジェクト ID
+
+3. **`GOOGLE_CLOUD_LOCATION`**
+   - 値: リージョン（例: `us-central1`）
+
+#### 方法2: 個別の環境変数として設定
+
+JSONファイルから各項目を個別に設定：
+
+1. **`GCLOUD_PROJECT`** - プロジェクト ID
+2. **`GOOGLE_PROJECT_ID`** - プロジェクト ID（GLCOUDと同じ値）
+3. **`GOOGLE_PRIVATE_KEY`** - 秘密鍵（改行は `\n` でエスケープ）
+4. **`GOOGLE_CLIENT_EMAIL`** - サービスアカウントのメールアドレス
+5. **`GOOGLE_PRIVATE_KEY_ID`** - 秘密鍵ID
+6. **`GOOGLE_CLIENT_ID`** - クライアントID
+7. **`GOOGLE_CLIENT_X509_CERT_URL`** - 証明書URL
+8. **`GOOGLE_CLOUD_LOCATION`** - リージョン
+
+> **注意**: 方法1（JSON文字列）の方が設定が簡単で推奨されます。方法2は個別管理が必要な場合に使用してください。
+
+### ローカル開発環境設定
+
+```bash
+# サービスアカウント鍵ファイルを環境変数として設定
+export GOOGLE_APPLICATION_CREDENTIALS="path/to/your/vertex-ai-key.json"
+export GCLOUD_PROJECT="your-project-id"
+export GOOGLE_CLOUD_LOCATION="us-central1"
+
+# または .env.local ファイルで設定
+echo 'GOOGLE_APPLICATION_CREDENTIALS={"type":"service_account",...}' >> .env.local
+echo 'GCLOUD_PROJECT=your-project-id' >> .env.local
+echo 'GOOGLE_CLOUD_LOCATION=us-central1' >> .env.local
+```
+
+### 移行後の確認事項
+
+- [x] チャット機能の動作確認
+- [x] 日英翻訳機能の動作確認
+- [x] ベクトル検索の動作確認
+- [x] 環境変数設定の確認
+- [x] デプロイメントの確認
 
 ## AIモデル管理・更新手順
 
