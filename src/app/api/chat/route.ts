@@ -1,5 +1,7 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-import { LangChainAdapter, Message } from 'ai';
+import { createUIMessageStreamResponse } from 'ai';
+import { Message } from '@ai-sdk/react';
+import { toUIMessageStream } from '@ai-sdk/langchain';
 import { createVectorStore } from "@/app/utils/pinecone";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { translateToEng } from '@/app/utils/translate';
@@ -69,7 +71,9 @@ export async function POST(req: Request) {
         //const stream = await llm.stream(question); // ベクトル検索せずに質問をそのまま投げる
 
         // クライアントに回答を返す
-        return LangChainAdapter.toDataStreamResponse(stream); // https://sdk.vercel.ai/docs/reference/stream-helpers/langchain-adapter
+        return createUIMessageStreamResponse({
+            stream: toUIMessageStream(stream)
+        }); // https://sdk.vercel.ai/docs/reference/stream-helpers/langchain-adapter
     } catch (error) {
         console.error('Error processing request:', error);
         return new Response('Internal Server Error', { status: 500 });
