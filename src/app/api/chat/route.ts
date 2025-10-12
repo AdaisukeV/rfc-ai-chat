@@ -7,6 +7,7 @@ import { OpenAIEmbeddings } from "@langchain/openai";
 import { translateToEng } from '@/app/utils/translate';
 import { buildPrompt } from '@/app/utils/prompt'; // プロンプト生成関数
 
+type UIMessageTextPart = { type: 'text'; text: string };
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
@@ -19,8 +20,11 @@ export async function POST(req: Request) {
         const lastMessage = messages[messages.length - 1];
         let question: string | undefined;
         if (lastMessage?.parts && Array.isArray(lastMessage.parts)) {
-            question = lastMessage.parts.map((part: any) => part.text).filter(Boolean).join(' ');
-        }
+            question = lastMessage.parts
+                .filter((part): part is UIMessageTextPart => part.type === 'text' && typeof part.text === 'string')
+                .map((part) => part.text)
+                .filter(Boolean)
+                .join(' ');
         if (!question) {
             return new Response('No question provided', { status: 400 });
         }
@@ -75,9 +79,10 @@ export async function POST(req: Request) {
         //const stream = await llm.stream(question); // ベクトル検索せずに質問をそのまま投げる
 
         // クライアントに回答を返す
-        return createUIMessageStreamResponse({
+            return createUIMessageStreamResponse({
             stream: toUIMessageStream(stream)
         }); // https://sdk.vercel.ai/docs/reference/stream-helpers/langchain-adapter
+        }
     } catch (error) {
         console.error('Error processing request:', error);
         return new Response('Internal Server Error', { status: 500 });
