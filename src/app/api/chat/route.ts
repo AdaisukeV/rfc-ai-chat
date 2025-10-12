@@ -1,6 +1,6 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { createUIMessageStreamResponse } from 'ai';
-import { Message } from '@ai-sdk/react';
+import { UIMessage } from '@ai-sdk/react';
 import { toUIMessageStream } from '@ai-sdk/langchain';
 import { createVectorStore } from "@/app/utils/pinecone";
 import { OpenAIEmbeddings } from "@langchain/openai";
@@ -12,11 +12,15 @@ export const maxDuration = 30;
 export async function POST(req: Request) {
     try {
         // リクエストから質問を取得
-        const { messages }: { messages: Message[] } = await req.json();
+        const { messages }: { messages: UIMessage[] } = await req.json();
         console.log('Received messages:', messages);
 
         // 最新の質問を取得
-        const question = messages[messages.length - 1]?.content;
+        const lastMessage = messages[messages.length - 1];
+        let question: string | undefined;
+        if (lastMessage?.parts && Array.isArray(lastMessage.parts)) {
+            question = lastMessage.parts.map((part: any) => part.text).filter(Boolean).join(' ');
+        }
         if (!question) {
             return new Response('No question provided', { status: 400 });
         }

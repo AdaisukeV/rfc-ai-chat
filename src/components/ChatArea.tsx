@@ -4,7 +4,7 @@ import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Message } from '@ai-sdk/react';
+import { UIMessage } from '@ai-sdk/react';
 
 // ReactMarkdownのcomponents設定を定義
 const markdownComponents = {
@@ -59,7 +59,7 @@ const markdownComponents = {
   },
 };
 
-export function ChatArea({ messages }: { messages: Message[] }) {
+export function ChatArea({ messages }: { messages: UIMessage[] }) {
   return (
     <Card className="flex flex-col flex-1 h-full bg-zinc-950 border-0">
       <CardHeader>
@@ -100,13 +100,6 @@ export function ChatArea({ messages }: { messages: Message[] }) {
                       }
                       return null;
                     })
-                  ) : message.content ? (
-                    <ReactMarkdown
-                      remarkPlugins={[remarkGfm, remarkBreaks]}
-                      components={markdownComponents}
-                    >
-                      {message.content}
-                    </ReactMarkdown>
                   ) : null}
                 </div>
               </div>
