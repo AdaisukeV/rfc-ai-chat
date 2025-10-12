@@ -1,12 +1,18 @@
 'use client';
 
+import React from 'react';
 import { useChat } from '@ai-sdk/react';
 import { ChatArea } from '../components/ChatArea';
 import { RfcList } from '../components/RfcList';
 import { QuestionForm } from '../components/QuestionForm';
 
 export default function Chat() {
-  const { messages, input, handleInputChange, handleSubmit } = useChat();
+  const { messages, sendMessage } = useChat();
+  const [input, setInput] = React.useState('');
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value);
+    adjustTextareaHeight(e);
+  };
 
   // 学習済みRFCの番号一覧
   const rfcNumbers = [
@@ -30,7 +36,7 @@ export default function Chat() {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault(); // デフォルトの改行動作を防ぐ
-      handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>); // handleSubmitを呼び出す
+      sendMessage({ text: input }); // sendMessageを呼び出す
     }
   };
 
@@ -58,7 +64,7 @@ export default function Chat() {
       <QuestionForm
         input={input}
         handleInputChange={handleInputChange}
-        handleSubmit={handleSubmit}
+        handleSubmit={() => sendMessage({ text: input })}
         handleKeyDown={handleKeyDown}
         adjustTextareaHeight={adjustTextareaHeight}
       />
