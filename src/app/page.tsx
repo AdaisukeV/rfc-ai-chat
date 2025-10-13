@@ -7,7 +7,7 @@ import { RfcList } from '../components/RfcList';
 import { QuestionForm } from '../components/QuestionForm';
 
 export default function Chat() {
-  const { messages, sendMessage } = useChat();
+  const { messages, sendMessage, status } = useChat();
   const [input, setInput] = React.useState('');
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
@@ -55,7 +55,7 @@ export default function Chat() {
         "
       >
         <div className="flex-1 min-w-0">
-          <ChatArea messages={messages} />
+          <ChatArea messages={messages} status={status} />
         </div>
         <div className="md:w-50 w-full mt-4 md:mt-0">
           <RfcList rfcNumbers={rfcNumbers} />

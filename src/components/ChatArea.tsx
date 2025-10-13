@@ -5,6 +5,7 @@ import remarkBreaks from "remark-breaks";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { UIMessage } from '@ai-sdk/react';
+import { Loader2 } from 'lucide-react';
 
 // ReactMarkdownのcomponents設定を定義
 const markdownComponents = {
@@ -59,7 +60,7 @@ const markdownComponents = {
   },
 };
 
-export function ChatArea({ messages }: { messages: UIMessage[] }) {
+export function ChatArea({ messages, status }: { messages: UIMessage[], status: 'submitted' | 'streaming' | 'ready' | 'error' }) {
   return (
     <Card className="flex flex-col flex-1 h-full bg-zinc-950 border-0">
       <CardHeader>
@@ -104,6 +105,14 @@ export function ChatArea({ messages }: { messages: UIMessage[] }) {
                 </div>
               </div>
             ))}
+            {(status === 'submitted' || status === 'streaming') && (
+              <div className="flex justify-start">
+                <div className="p-2 rounded-lg bg-zinc-800 text-white flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>回答を生成中です...</span>
+                </div>
+              </div>
+            )}
           </div>
         </ScrollArea>
       </CardContent>
