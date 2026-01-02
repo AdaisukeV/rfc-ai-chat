@@ -14,7 +14,7 @@
     "@ai-sdk/openai": "^2.0.44",
     "@ai-sdk/react": "^2.0.68",
     "@hookform/resolvers": "^5.0.1",
-    "@langchain/core": "^0.3.55",
+    "@langchain/core": "^0.3.80",
     "@langchain/google-genai": "^0.2.5",
     "@langchain/google-vertexai": "^0.2.5",
     "@langchain/pinecone": "^0.2.0",
